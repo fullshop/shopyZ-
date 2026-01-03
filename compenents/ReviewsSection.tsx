@@ -1,20 +1,45 @@
-
 import React, { useState } from 'react';
-import { Star, CheckCircle, User, MessageSquarePlus } from 'lucide-react';
+import { Star, CheckCircle, User, MessageSquarePlus, Heart } from 'lucide-react';
 import { Review } from '../types';
 
 interface ReviewsSectionProps {
   reviews: Review[];
   onAddReview: (review: Omit<Review, 'id' | 'date' | 'isVerified'>) => void;
+  translations: any;
 }
 
-const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, onAddReview }) => {
+const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, onAddReview, translations: t }) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [reviewLikes, setReviewLikes] = useState<Record<string, number>>({});
+  const [userLikedReviews, setUserLikedReviews] = useState<Set<string>>(new Set());
+  
   const [newReview, setNewReview] = useState({
     userName: '',
     rating: 5,
     comment: ''
   });
+
+  const toggleReviewLike = (reviewId: string) => {
+    setUserLikedReviews(prev => {
+      const next = new Set(prev);
+      const isCurrentlyLiked = next.has(reviewId);
+      
+      if (isCurrentlyLiked) {
+        next.delete(reviewId);
+        setReviewLikes(prevLikes => ({
+          ...prevLikes,
+          [reviewId]: (prevLikes[reviewId] || 0) - 1
+        }));
+      } else {
+        next.add(reviewId);
+        setReviewLikes(prevLikes => ({
+          ...prevLikes,
+          [reviewId]: (prevLikes[reviewId] || 0) + 1
+        }));
+      }
+      return next;
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,24 +63,24 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, onAddReview })
     <div className="mt-16 border-t border-gray-100 pt-16">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div>
-          <h3 className="text-2xl font-bold text-gray-900">Customer Reviews</h3>
-          <p className="text-gray-500 mt-1">What our community thinks about this piece.</p>
+          <h3 className="text-2xl font-bold text-gray-900">{t.customerReviews}</h3>
+          <p className="text-gray-500 mt-1">{t.reviewSub}</p>
         </div>
         <button
           onClick={() => setIsFormOpen(!isFormOpen)}
           className="flex items-center gap-2 bg-white border border-gray-200 px-6 py-3 rounded-full font-bold text-sm text-gray-700 hover:bg-gray-50 transition-all shadow-sm"
         >
           <MessageSquarePlus size={18} />
-          {isFormOpen ? 'Cancel' : 'Write a Review'}
+          {isFormOpen ? t.cancel : t.writeReview}
         </button>
       </div>
 
       {isFormOpen && (
         <form onSubmit={handleSubmit} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 mb-12 animate-in fade-in slide-in-from-top-4 duration-300">
-          <h4 className="text-lg font-bold mb-6">Share your experience</h4>
+          <h4 className="text-lg font-bold mb-6">{t.shareExp}</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Your Name</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">{t.yourName}</label>
               <input
                 type="text"
                 required
@@ -66,7 +91,7 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, onAddReview })
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Rating</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">{t.rating}</label>
               <div className="flex gap-2 bg-white border border-gray-200 rounded-xl px-4 py-3 h-[50px] items-center">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -85,21 +110,21 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, onAddReview })
             </div>
           </div>
           <div className="mb-6">
-            <label className="block text-sm font-bold text-gray-700 mb-2">Comment</label>
+            <label className="block text-sm font-bold text-gray-700 mb-2">{t.commentLabel}</label>
             <textarea
               required
               rows={4}
               value={newReview.comment}
               onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
               className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500 transition-all resize-none"
-              placeholder="Tell us what you liked or disliked..."
+              placeholder="..."
             />
           </div>
           <button
             type="submit"
             className="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
           >
-            Submit Review
+            {t.submitReview}
           </button>
         </form>
       )}
@@ -107,12 +132,12 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, onAddReview })
       {reviews.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-3xl border border-dashed border-gray-200">
           <User className="mx-auto text-gray-300 mb-4" size={40} />
-          <p className="text-gray-400 font-medium">No reviews yet. Be the first to share your thoughts!</p>
+          <p className="text-gray-400 font-medium">{t.noReviews}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {reviews.map((review) => (
-            <div key={review.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div key={review.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group/card">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold">
@@ -121,9 +146,8 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, onAddReview })
                   <div>
                     <h5 className="font-bold text-gray-900 flex items-center gap-2">
                       {review.userName}
-                      {/* FIX: Move title attribute to a wrapper span because Lucide components do not support title prop directly */}
                       {review.isVerified && (
-                        <span title="Verified Buyer">
+                        <span title={t.verified}>
                           <CheckCircle size={14} className="text-emerald-500" />
                         </span>
                       )}
@@ -133,7 +157,19 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews, onAddReview })
                 </div>
                 <div className="flex">{renderStars(review.rating)}</div>
               </div>
-              <p className="text-gray-600 text-sm leading-relaxed italic">"{review.comment}"</p>
+              <p className="text-gray-600 text-sm leading-relaxed italic mb-4">"{review.comment}"</p>
+              
+              <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                <button 
+                  onClick={() => toggleReviewLike(review.id)}
+                  className={`flex items-center gap-1.5 text-xs font-bold transition-all active:scale-90 ${
+                    userLikedReviews.has(review.id) ? 'text-rose-500' : 'text-gray-400 hover:text-rose-500'
+                  }`}
+                >
+                  <Heart size={14} fill={userLikedReviews.has(review.id) ? "currentColor" : "none"} />
+                  <span>{t.helpful} ({reviewLikes[review.id] || 0})</span>
+                </button>
+              </div>
             </div>
           ))}
         </div>

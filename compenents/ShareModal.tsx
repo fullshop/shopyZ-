@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X, Copy, Check, Twitter, Facebook, MessageCircle, Send } from 'lucide-react';
 import { Product } from '../types';
@@ -6,9 +5,10 @@ import { Product } from '../types';
 interface ShareModalProps {
   product: Product;
   onClose: () => void;
+  translations: any;
 }
 
-const ShareModal: React.FC<ShareModalProps> = ({ product, onClose }) => {
+const ShareModal: React.FC<ShareModalProps> = ({ product, onClose, translations: t }) => {
   const [copied, setCopied] = useState(false);
   const shareUrl = `${window.location.origin}/product/${product.id}`;
 
@@ -46,8 +46,8 @@ const ShareModal: React.FC<ShareModalProps> = ({ product, onClose }) => {
           <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-indigo-600">
             <Send size={32} />
           </div>
-          <h3 className="text-xl font-bold text-gray-900">Share Product</h3>
-          <p className="text-sm text-gray-500 mt-1">Spread the word about {product.name}</p>
+          <h3 className="text-xl font-bold text-gray-900">{t.shareProd}</h3>
+          <p className="text-sm text-gray-500 mt-1">{t.spreadWord} {product.name}</p>
         </div>
 
         {/* Social Icons */}
@@ -67,7 +67,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ product, onClose }) => {
 
         {/* Copy Link Section */}
         <div className="space-y-2">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Copy Link</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">{t.copyLink}</p>
           <div className="relative flex items-center">
             <input
               type="text"
@@ -85,7 +85,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ product, onClose }) => {
             </button>
           </div>
           {copied && (
-            <p className="text-[10px] font-bold text-emerald-500 text-center animate-pulse">Link copied to clipboard!</p>
+            <p className="text-[10px] font-bold text-emerald-500 text-center animate-pulse">{t.copied}</p>
           )}
         </div>
       </div>

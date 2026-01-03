@@ -1,11 +1,11 @@
-
 import React, { useRef, useState, useMemo } from 'react';
-import { ShoppingBag, Search, Globe, ChevronDown, X } from 'lucide-react';
+import { ShoppingBag, Search, Globe, ChevronDown, X, Heart } from 'lucide-react';
 import { View, Language, Product } from '../types';
 
 interface NavbarProps {
   setView: (view: View) => void;
   cartCount: number;
+  likedCount: number;
   onAdminAttempt: () => void;
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -13,6 +13,8 @@ interface NavbarProps {
   setSearchTerm: (term: string) => void;
   allProducts: Product[];
   handleViewProduct: (product: Product) => void;
+  onFavoritesClick: () => void;
+  translations: any;
 }
 
 const HighlightedText: React.FC<{ text: string; highlight: string }> = ({ text, highlight }) => {
@@ -35,13 +37,16 @@ const HighlightedText: React.FC<{ text: string; highlight: string }> = ({ text, 
 const Navbar: React.FC<NavbarProps> = ({ 
   setView, 
   cartCount, 
+  likedCount,
   onAdminAttempt, 
   language, 
   setLanguage,
   searchTerm,
   setSearchTerm,
   allProducts,
-  handleViewProduct
+  handleViewProduct,
+  onFavoritesClick,
+  translations: t
 }) => {
   const timerRef = useRef<number | null>(null);
   const [isPressing, setIsPressing] = useState(false);
@@ -101,7 +106,7 @@ const Navbar: React.FC<NavbarProps> = ({
               <div className="relative flex items-center">
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder={t.searchPlaceholder}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onFocus={() => setIsSearchExpanded(true)}
@@ -123,7 +128,7 @@ const Navbar: React.FC<NavbarProps> = ({
               {isSearchExpanded && suggestions.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border border-gray-100 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-2 border-b border-gray-50">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-3">Top Matches</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-3">{language === 'AR' ? 'أفضل النتائج' : 'Top Matches'}</span>
                   </div>
                   {suggestions.map(p => (
                     <button
@@ -172,18 +177,32 @@ const Navbar: React.FC<NavbarProps> = ({
                 </div>
               )}
             </div>
-            
-            <button 
-              onClick={() => setView('cart')}
-              className="relative text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <ShoppingBag size={20} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-indigo-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                  {cartCount}
-                </span>
-              )}
-            </button>
+
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={onFavoritesClick}
+                className="relative text-gray-400 hover:text-rose-500 transition-colors"
+              >
+                <Heart size={20} />
+                {likedCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                    {likedCount}
+                  </span>
+                )}
+              </button>
+              
+              <button 
+                onClick={() => setView('cart')}
+                className="relative text-gray-400 hover:text-indigo-600 transition-colors"
+              >
+                <ShoppingBag size={20} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-indigo-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>

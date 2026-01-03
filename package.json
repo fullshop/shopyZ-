@@ -7,6 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
+{
+  "name": "shopyz",
+  "homepage": "https://your-github-username.github.io/shopyZ-/",
+  ...
+}
   },
   "dependencies": {
     "react": "18.3.1",

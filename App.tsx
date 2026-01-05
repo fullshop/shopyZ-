@@ -1,3 +1,4 @@
+import { BrowserRouter } from 'react-router-dom';
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { ShoppingCart, ArrowLeft, Trash2, Plus, Minus, CheckCircle2, ShoppingBag, Mail, Lock, Heart, Truck, User, Phone, MapPin, Building, Home, Star, Sparkles, ChevronLeft, ChevronRight, ChevronDown, Loader2, ListFilter, Share2, MessageCircle, Info, Trash } from 'lucide-react';
 import Navbar from './components/Navbar';

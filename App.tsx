@@ -873,26 +873,9 @@ const App: React.FC = () => {
   );
 };
 return (
-  <BrowserRouter basename="/shopyz-/"> 
+  <BrowserRouter basename="/shopyz-/">
     <div className={`min-h-screen flex flex-col bg-[#FDFDFD] ${isRTL ? 'font-arabic' : ''}`} dir={isRTL ? 'rtl' : 'ltr'}>
-      <Navbar 
-        setView={setView}
-        cartCount={cartCount}
-        likedCount={likedCount}
-        onAdminAttempt={handleAdminAttempt}
-        language={language}
-        setLanguage={setLanguage}
-        searchTerm={searchQuery}
-        setSearchTerm={setSearchQuery}
-        allProducts={productsData}
-        handleViewProduct={setQuickViewProduct}
-        onFavoritesClick={() => setView('favorites')}
-        translations={t}
-      />
-      <main className="flex-grow">
-        {/* Your existing {view === 'home' && (...)} logic here */}
-      </main>
-      {/* ... (Footer and Modals) ... */}
+      {/* ... all your existing code ... */}
     </div>
   </BrowserRouter>
 );

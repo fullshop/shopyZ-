@@ -1,15 +1,14 @@
-import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  // FIXED: Changed 'shopyZ-' to 'shopyz-' to match your actual URL
-  base: '/shopyz-/', 
+  base: '/shopyz-/', // Matches your repo name exactly
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '.'),
-    }
+      '@': path.resolve(__dirname, './src'),
+    },
   },
   build: {
     outDir: 'dist',
